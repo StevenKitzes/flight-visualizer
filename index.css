@@ -1,0 +1,44 @@
+body {
+  background-color: #222;
+  color: white;
+  font-family: sans-serif;
+}
+
+div {
+  display: inline-block;
+  margin: 0;
+  padding: 0;
+  position: absolute;
+}
+
+#visualizer-body {
+  height: 550px;
+  width: 1500px;
+}
+
+#alt-axis {
+  background-color: #333;
+  height: 500px;
+  width: 500px;
+
+  top: 0px;
+  left: 0px;
+}
+
+#points {
+  background-color: #111;
+  height: 500px;
+  width: 1000px;
+  
+  top: 0px;
+  left: 500px;
+}
+
+#speed-axis {
+  background-color: #333;
+  height: 50px;
+  width: 1000px;
+
+  top: 500px;
+  left: 500px;
+}
