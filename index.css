@@ -24,7 +24,6 @@ body {
   background-color: #222;
   color: white;
   font-family: sans-serif;
-  white-space: pre;
 }
 
 div {
@@ -34,7 +33,18 @@ div {
   position: absolute;
 }
 
+a {
+  color: white;
+}
+
+#visualizer-container {
+  height: 550px;
+  overflow: auto;
+  position: static;
+}
+
 #visualizer-body {
+  display: block;
   height: 550px;
   width: 1200px;
 }
@@ -44,6 +54,7 @@ div {
   height: 500px;
   text-align: center;
   width: 200px;
+  white-space: pre;
 
   top: 0px;
   left: 0px;
@@ -58,10 +69,19 @@ div {
 #points {
   background-color: #111;
   height: 500px;
+  text-align: center;
   width: 1000px;
   
   top: 0px;
   left: 200px;
+}
+#loading-div {
+  display: inline-block;
+  left: -33px;
+  position: relative;
+  text-align: center;
+  top: 175px;
+  white-space: pre;
 }
 
 #speed-axis {
@@ -69,6 +89,7 @@ div {
   height: 50px;
   text-align: center;
   width: 1000px;
+  white-space: pre;
 
   top: 500px;
   left: 200px;
@@ -85,10 +106,15 @@ div {
   color: black;
   height: 5px;
   overflow: hidden;
+  text-align: left;
   width: 5px;
 }
 .point-info {
   display: inline-block;
   margin: 5px;
   white-space: pre;
+}
+
+#notes {
+  width: 1200;
 }

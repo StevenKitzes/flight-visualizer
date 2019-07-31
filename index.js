@@ -51,6 +51,11 @@ const log = msg => {
   }
 }
 
+// stolen from stackoverflow here: https://stackoverflow.com/a/2901298/983173
+function numberWithCommas(x) {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
 const sizeUp = (event) => {
   event.target.style.width = '325px';
   event.target.style.height = '3em';
@@ -60,6 +65,11 @@ const sizeDown = (event) => {
   event.target.style.width = '5px';
   event.target.style.height = '5px';
   event.target.style.zIndex = '4';
+}
+const sizeDownTarget = (target) => {
+  target.style.width = '5px';
+  target.style.height = '5px';
+  target.style.zIndex = '4';
 }
 
 const drawFlights = (flights, minAlt, maxAlt, maxVel) => {
@@ -110,7 +120,7 @@ const drawFlights = (flights, minAlt, maxAlt, maxVel) => {
     }
 
     // for extreme climb/descent rates, bring this point to foreground
-    if(Math.abs(flight.vert) > 5) {
+    if(Math.abs(flight.vert) > 10) {
       point.style.zIndex = '3';
     }
 
@@ -118,12 +128,12 @@ const drawFlights = (flights, minAlt, maxAlt, maxVel) => {
     pointInfo.push('<div class="point-info">');
     pointInfo.push(
       flight.vert > 0 ?
-        'Flight is ascending from FL ' + Math.floor(flight.alt * 3.28084 / 100) + ' at ' + Math.ceil(flight.vert) + ' m/s' :
+        'Flight is ascending from FL ' + numberWithCommas(Math.floor(flight.alt * 3.28084 / 100)) + ' at ' + Math.ceil(flight.vert) + ' m/s' :
         flight.vert < 0 ?
-          'Flight is descending from FL ' + Math.floor(flight.alt * 3.28084 / 100) + ' at ' + Math.ceil(flight.vert) + ' m/s' :
-          'Level flight at FL ' + Math.floor(flight.alt * 3.28084 / 100)
+          'Flight is descending from FL ' + numberWithCommas(Math.floor(flight.alt * 3.28084 / 100)) + ' at ' + Math.ceil(flight.vert) + ' m/s' :
+          'Level flight at FL ' + numberWithCommas(Math.floor(flight.alt * 3.28084 / 100))
     );
-    pointInfo.push('\nVelocity is ' + Math.ceil((flight.vel*3.6/1.6)/1.151) + ' knots over the ground');
+    pointInfo.push('\nVelocity is ' + numberWithCommas(Math.ceil((flight.vel*3.6/1.6)/1.151)) + ' knots across the ground');
     pointInfo.push('</div>');
     point.innerHTML = pointInfo.join('');
     points.appendChild(point);
@@ -134,11 +144,14 @@ const drawFlights = (flights, minAlt, maxAlt, maxVel) => {
   for(let p of pointNodes) {
     p.addEventListener('mouseenter', sizeUp);
     p.addEventListener('mouseleave', sizeDown);
+    p.addEventListener('mousedown', () => {sizeDownTarget(p)}, false);
   }
 
   // populate axis labels
-  document.getElementById('alt-axis').innerHTML = '<div id="alt-info">^\nAltitude range is from \n' + Math.ceil(minAlt * 3.28084) + 'ft\nto\n' + Math.ceil(maxAlt * 3.28084) + 'ft\nv</div>';
-  document.getElementById('speed-axis').innerHTML = '<div id="speed-info">&#60 = = Velocity range is from 0 to ' + Math.ceil(maxVel * 3.6 / 1.6) + 'mi/hr = = &#62\n<span style="color:red;">Red</span> flights are descending, <span style="color:green;">green</span> flights are ascending, white are level flight (or no data)</div>';
+  document.getElementById('alt-axis').innerHTML = '<div id="alt-info">^\nAltitude range is from \n' + numberWithCommas(Math.ceil(minAlt * 3.28084)) + 'ft\nto\n' + numberWithCommas(Math.ceil(maxAlt * 3.28084)) + 'ft\nv</div>';
+  document.getElementById('speed-axis').innerHTML = '<div id="speed-info">&#60 = = Velocity range is from 0 to ' + numberWithCommas(Math.ceil(maxVel * 3.6 / 1.6)) + ' mi/hr = = &#62\n<span style="color:red;">Red</span> flights are descending, <span style="color:green;">green</span> flights are ascending, white are level flight (or no data)</div>';
+  // hide loading div
+  document.getElementById('loading-div').style.display = 'none';
 }
 
 const parse = response => {
@@ -162,6 +175,7 @@ const parse = response => {
     let vel = flight[velocity];
     let vert = flight[verticalVelocity];
     const grd = flight[onGround];
+    const call = flight[callSign];
 
     if(!alt) altFails++;
     if(!vel) velFails++;
@@ -176,7 +190,7 @@ const parse = response => {
     alt = alt < 1 ? 1 : alt;
     vel = vel < 1 ? 1 : vel;
 
-    flights.push({alt,vel,vert});
+    flights.push({alt,vel,vert,call});
 
     if(alt > maxAlt)
       maxAlt = alt;

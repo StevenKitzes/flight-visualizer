@@ -20,22 +20,41 @@ SOFTWARE. -->
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>Look that them thangs flyin' and such!</title>
+    <title>Airplanes a-flyin'!</title>
     <link rel='stylesheet' type='text/css' href='index.css'>
   </head>
   <body>
-    <h1>Look at them thangs! (all live flight data worldwide)</h1>
-    <div id='visualizer-body'>
-      <div id='alt-axis'>
-
-      </div>
-      <div id='points'>
-
-      </div>
-      <div id='speed-axis'>
-
+    <h1>Live flight data worldwide</h1>
+    <h4>Via the <a href='https://opensky-network.org'>OpenSky Network</a></h4>
+    <div id='visualizer-container'>
+      <div id='visualizer-body'>
+        <div id='alt-axis'>
+  
+        </div>
+        <div id='points'>
+          <div id='loading-div'>
+            <img src='loading.gif'>
+            <span>. . . loading flight data . . .</span>
+          </div>
+        </div>
+        <div id='speed-axis'>
+  
+        </div>
       </div>
     </div>
+    <p id='notes'>
+      <strong>Note:</strong> Hover over any point to get more detailed information about that specific flight.
+      The more <span style="color:red;">red</span> a point is, the more aggressively
+      that flight is descending.  Likewise, the more <span style="color:green;">green</span> a point is the
+      more aggressively it is ascending.  The more <strong>white</strong> a point is, the closer to level
+      flight.
+    </p>
+    <p id='notes'>
+      Some flights appear to have extremely high altitude or velocity.  It has been suggested on forums that
+      these may be military or research vessels.  I have no idea.  They throw off the scale of the graph, I
+      acknowledge.  This is a target for future improvement (an option for you to turn off extremes, or to
+      otherwise be able to zoom in on the graph).
+    </p>
 
     <script type='text/javascript' src='index.js'></script>
   </body>
