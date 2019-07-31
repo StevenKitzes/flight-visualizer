@@ -20,16 +20,22 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+* {
+}
+
 body {
   background-color: #222;
   color: white;
   font-family: sans-serif;
+  margin: 0px;
+  padding: 0px;
+  width: 100%;
 }
 
 div {
   display: inline-block;
-  margin: 0;
-  padding: 0;
+  margin: 0px;
+  padding: 0px;
   position: absolute;
 }
 
@@ -37,8 +43,24 @@ a {
   color: white;
 }
 
+h1 {
+  margin-left: 15px;
+  margin-top: 15px;
+  text-align: center;
+}
+h4 {
+  margin-left: 15px;
+  text-align: center;
+}
+
+p {
+  margin-left: 15px;
+  text-align: center;
+}
+
 #visualizer-container {
   height: 550px;
+  margin-left: 15px;
   overflow: auto;
   position: static;
 }
@@ -117,4 +139,14 @@ a {
 
 #notes {
   width: 1200;
+}
+
+#footer {
+  background-color: black;
+  bottom: 0px;
+  left: 0px;
+  margin: 0px;
+  padding: 10px 0px;
+  text-align: center;
+  width: 100%;
 }
