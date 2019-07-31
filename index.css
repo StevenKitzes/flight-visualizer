@@ -21,11 +21,16 @@ div {
   background-color: #333;
   height: 500px;
   text-align: center;
-  vertical-align: middle;
   width: 200px;
 
   top: 0px;
   left: 0px;
+}
+#alt-info {
+  display: inline-block;
+  left: 0px;
+  top: 200px;
+  width: 100%;
 }
 
 #points {
@@ -41,15 +46,27 @@ div {
   background-color: #333;
   height: 50px;
   text-align: center;
-  vertical-align: middle;
   width: 1000px;
 
   top: 500px;
   left: 200px;
 }
+#speed-info {
+  display: inline-block;
+  left: 0px;
+  top: 5px;
+  width: 100%;
+}
 
 .flight-point {
   border-radius: 2px;
+  color: black;
   height: 5px;
+  overflow: hidden;
   width: 5px;
+}
+.point-info {
+  display: inline-block;
+  margin: 5px;
+  white-space: pre;
 }

@@ -29,37 +29,94 @@ const log = msg => {
   }
 }
 
-const drawFlights = (flights, minAlt, maxAlt, maxVel, minVert, maxVert) => {
+const sizeUp = (event) => {
+  event.target.style.width = '325px';
+  event.target.style.height = '3em';
+  event.target.style.zIndex = '5';
+}
+const sizeDown = (event) => {
+  event.target.style.width = '5px';
+  event.target.style.height = '5px';
+  event.target.style.zIndex = '4';
+}
+
+const drawFlights = (flights, minAlt, maxAlt, maxVel) => {
   log('Drawing flights');
+  // set up constants for mathification
   const viewHeight = 500, viewWidth = 1000;
   const colorRange = 255;
-  const factorHeight = viewHeight / maxAlt, factorWidth = viewWidth / maxVel;
-  const factorPosVert = colorRange / maxVert, factorNegVert = viewWidth / minVert;
-
+  const verticalVelocityExtrema = 10;   // based on typical climb/descent rates
+  const factorHeight = viewHeight / maxAlt;
+  const factorWidth = viewWidth / maxVel;
+  const factorPosVert = colorRange / verticalVelocityExtrema;
+  const factorNegVert = colorRange / -verticalVelocityExtrema;
+ 
   flights.forEach(flight => {
     const point = document.createElement('div');
+    const pointInfo = [];
+    
+    let pos = Math.floor(flight.vel * factorWidth);
+    let top = 500 - Math.floor(flight.alt * factorHeight);
+    let color = 0;
+    
+    top = top > 495 ? 495 : top;
+
     point.className = 'flight-point';
     point.style.position = 'absolute';
-    point.style.top = 500 - Math.floor(flight.alt * factorHeight);
-    point.style.left = Math.floor(flight.vel * factorWidth);
-    point.style.top = point.style.top > 495 ? 495 : point.style.top;
-    point.style.left = point.style.left > 995 ? 995 : point.style.left;
+    point.style.top = top;
+
+    if(pos > 650) {
+      point.style.right = 1000 - pos;
+    }
+    else {
+      point.style.left = pos;
+    }
+    
     if(flight.vert > 0) {
-      let color = flight.vert * factorPosVert;
+      color = 255 - Math.ceil(flight.vert * factorPosVert);
       point.style.backgroundColor = 'rgb(' + color + ',255,' + color + ')';
+      point.style.zIndex = '2';
     }
     else if(flight.vert < 0) {
-      let color = flight.vert * factorNegVert;
+      color = 255 - Math.ceil(flight.vert * factorNegVert);
       point.style.backgroundColor = 'rgb(255,' + color + ',' + color + ')';
+      point.style.zIndex = '2';
     }
     else {  // flight.verticalVelocity == 0
       point.style.backgroundColor = 'white';
+      point.style.zIndex = '1';
     }
+
+    // for extreme climb/descent rates, bring this point to foreground
+    if(Math.abs(flight.vert) > 5) {
+      point.style.zIndex = '3';
+    }
+
+    // build info string for expanded (hovered) points
+    pointInfo.push('<div class="point-info">');
+    pointInfo.push(
+      flight.vert > 0 ?
+        'Flight is ascending from FL ' + Math.floor(flight.alt * 3.28084 / 100) + ' at ' + Math.ceil(flight.vert) + ' m/s' :
+        flight.vert < 0 ?
+          'Flight is descending from FL ' + Math.floor(flight.alt * 3.28084 / 100) + ' at ' + Math.ceil(flight.vert) + ' m/s' :
+          'Level flight at FL ' + Math.floor(flight.alt * 3.28084 / 100)
+    );
+    pointInfo.push('\nVelocity is ' + Math.ceil((flight.vel*3.6/1.6)/1.151) + ' knots over the ground');
+    pointInfo.push('</div>');
+    point.innerHTML = pointInfo.join('');
     points.appendChild(point);
   });
 
-  document.getElementById('alt-axis').innerHTML = '^\nAltitude range is from \n' + Math.ceil(minAlt * 3.28084) + 'ft\nto\n' + Math.ceil(maxAlt * 3.28084) + 'ft\nv';
-  document.getElementById('speed-axis').innerHTML = '&#60 Velocity range is from 0 to ' + Math.ceil(maxVel * 3.6 / 1.6) + 'mi/hr &#62\n<span style="color:red;">Red</span> flights are descending, <span style="color:green;">green</span> flights are ascending, white are level flight (or no data)';
+  // assign mouseover listeners to points
+  const pointNodes = document.getElementsByClassName('flight-point');
+  for(let p of pointNodes) {
+    p.addEventListener('mouseenter', sizeUp);
+    p.addEventListener('mouseleave', sizeDown);
+  }
+
+  // populate axis labels
+  document.getElementById('alt-axis').innerHTML = '<div id="alt-info">^\nAltitude range is from \n' + Math.ceil(minAlt * 3.28084) + 'ft\nto\n' + Math.ceil(maxAlt * 3.28084) + 'ft\nv</div>';
+  document.getElementById('speed-axis').innerHTML = '<div id="speed-info">&#60 = = Velocity range is from 0 to ' + Math.ceil(maxVel * 3.6 / 1.6) + 'mi/hr = = &#62\n<span style="color:red;">Red</span> flights are descending, <span style="color:green;">green</span> flights are ascending, white are level flight (or no data)</div>';
 }
 
 const parse = response => {
